@@ -1,0 +1,63 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  application:
+    name: Exchange
+  banner:
+    location: banner.txt
+  rabbitmq:
+    addresses: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USERNAME:admin}
+    password: ${RABBITMQ_PASSWORD:admin}
+    port: ${RABBITMQ_PORT:5672}
+  datasource:
+    url:  ${DATABASE_HOST:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    hikari:
+      minimumIdle: 5
+      maximumPoolSize: 100
+      connectionTimeout: 3000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: false
+  output:
+    ansi:
+      enabled: Always
+
+logging:
+  level:
+    com.robsonkades: TRACE
+    root: ERROR
+    org.springframework.web: ERROR
+    org.hibernate: ERROR
+
+meli:
+  broker:
+    exchange:
+      vibraniumExchange: vibranium.exchange
+    queue:
+      vibraniumExchangeBrokerCommandQueue:
+        name: vibranium.exchange.brokercommand
+      vibraniumExchangeEventMatchQueue:
+        name: vibranium.exchange.eventcommand
+    key:
+      vibraniumBrokerCommandKey: vibranium.brokercommand
+      vibraniumEventMatchCommandKey: vibranium.eventmatchcommand
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health

@@ -1,0 +1,59 @@
+version: '3.1'
+
+services:
+  rabbitmq:
+    image: docker.io/bitnami/rabbitmq:3.9
+    restart: always
+    ports:
+      - 4369:4369
+      - 5551:5551
+      - 5552:5552
+      - 5672:5672
+      - 25672:25672
+      - 15672:15672
+    environment:
+      - RABBITMQ_SECURE_PASSWORD=no
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=admin
+    volumes:
+      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
+  postgresql:
+    image: docker.io/bitnami/postgresql:14
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=postgres
+  broker:
+    image: docker.io/robsonkades/broker:1.0.0
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgresql
+      - rabbitmq
+    environment:
+      - HOST_EXCHANGE=http://exchange:8081
+      - RABBITMQ_HOST=rabbitmq
+      - DATABASE_HOST=jdbc:postgresql://postgresql:5432/postgres
+  exchange:
+    image: docker.io/robsonkades/exchange:1.0.0
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - postgresql
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - DATABASE_HOST=jdbc:postgresql://postgresql:5432/postgres
+volumes:
+  rabbitmq_data:
+    driver: local
+  postgresql_data:
+    driver: local

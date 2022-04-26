@@ -1,0 +1,170 @@
+swagger: "2.0"
+info:
+  description: "Vibranium exchange"
+  version: "1.0.0"
+  title: "Swagger exchange"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "robsonkades@outlook.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:8081"
+basePath: "/"
+tags:
+- name: "exchange"
+  description: "Executa operações no exchange"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+- name: "events"
+  description: "Eventos no exchange"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+schemes:
+- "http"
+paths:
+  /orders:
+    post:
+      tags:
+      - "exchange"
+      summary: "Cria uma order no exchange"
+      description: ""
+      operationId: "createOrder"
+      consumes:
+      - "application/json"
+      produces:
+      - "text/plain"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Criar uma order de compra ou venda no exchange"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateOrder"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "Order criada"
+    get:
+      tags:
+      - "exchange"
+      summary: "Lista as ordens em aberta no exchange"
+      description: ""
+      operationId: "listOrders"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/OrderResponse"
+  /events:
+    get:
+      tags:
+      - "events"
+      summary: "Retorna os eventos de transação no exchange"
+      description: ""
+      operationId: "getEvents"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EventsResponse"
+definitions:
+  CreateOrder:
+    type: "object"
+    required:
+    - "amount"
+    - "price"
+    - "wallet"
+    - "type"
+    properties:
+      amount:
+        type: "number"
+        example: 100
+      price:
+        type: "number"
+        example: 100
+      wallet:
+        type: "string"
+        example: "robson-kades-wallet"
+      type:
+        type: "string"
+        description: "Tipo de operação"
+        enum:
+        - "SELL"
+        - "BUY"
+  OrderResponse:
+    type: "object"
+    required:
+    - "amount"
+    - "price"
+    - "type"
+    properties:
+      amount:
+        type: "number"
+        example: 100
+      price:
+        type: "number"
+        example: 100
+      type:
+        type: "string"
+        description: "Tipo de operação"
+        enum:
+        - "SELL"
+        - "BUY"
+  EventsResponse:
+    type: "object"
+    required:
+    - "restingWallet"
+    - "incomingWallet"
+    - "restingOrderId"
+    - "incomingOrderId"
+    - "executedQuantity"
+    - "price"
+    - "remainingQuantity"
+    - "incomingSide"
+    properties:
+      restingWallet:
+        type: "string"
+        example: "wallet-1"
+      incomingWallet:
+        type: "string"
+        example: "wallet-2"
+      restingOrderId:
+        type: "string"
+        example: "order-1"
+      incomingOrderId:
+        type: "string"
+        example: "order-2"
+      executedQuantity:
+        type: "number"
+        example: 100
+      price:
+        type: "number"
+        example: 1000
+      remainingQuantity:
+        type: "number"
+        example: 0
+      incomingSide:
+        type: "string"
+        description: "Vibranium"
+        enum:
+        - "SELL"
+        - "BUY"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
