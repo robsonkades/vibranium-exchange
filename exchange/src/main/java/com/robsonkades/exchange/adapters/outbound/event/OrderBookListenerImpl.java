@@ -26,16 +26,16 @@ public class OrderBookListenerImpl implements OrderBookPortListener {
     }
 
     @Override
-    public void cancel(String wallet, String orderId, long canceledQuantity, long remainingQuantity) {
+    public void cancel(String wallet, String orderId, long canceledQuantity, long remainingAmount) {
     }
 
     @Override
-    public void add(String wallet, String orderId, Side side, long price, long size) {
+    public void add(String wallet, String orderId, Side side, long price, long amount) {
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void match(String restingWallet, String incomingWallet, String restingOrderId, String incomingOrderId, Side incomingSide, long price, long executedQuantity, long remainingQuantity) {
+    public void match(String restingWallet, String incomingWallet, String restingOrderId, String incomingOrderId, Side incomingSide, long price, long executedAmount, long remainingAmount) {
 
         TransactionEntity transaction = new TransactionEntity();
         transaction.setRestingWallet(restingWallet);
@@ -44,7 +44,7 @@ public class OrderBookListenerImpl implements OrderBookPortListener {
         transaction.setIncomingOrderId(incomingOrderId);
         transaction.setSide(incomingSide);
         transaction.setPrice(price);
-        transaction.setExecutedQuantity(executedQuantity);
+        transaction.setExecutedQuantity(executedAmount);
         transaction.setCreationDate(LocalDateTime.now());
         saveTransaction.execute(transaction);
 
@@ -69,8 +69,8 @@ public class OrderBookListenerImpl implements OrderBookPortListener {
                 transaction.getIncomingOrderId(),
                 incomingSide,
                 price,
-                executedQuantity,
-                remainingQuantity
+                executedAmount,
+                remainingAmount
         ));
 
         exchangeCommandPublisher.publishNotificationCommand(sellOrder);

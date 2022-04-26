@@ -43,7 +43,7 @@ public class Order {
         return price;
     }
 
-    public long getRemainingQuantity() {
+    public long getRemainingAmount() {
         return remainingQuantity;
     }
 

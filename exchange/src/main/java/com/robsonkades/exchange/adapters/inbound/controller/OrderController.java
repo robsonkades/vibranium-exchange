@@ -33,7 +33,7 @@ public class OrderController {
     public ResponseEntity<List<OrderResponseDto>> index() {
         var orders = listOrdersPortService.execute().values()
                 .stream()
-                .map(item -> new OrderResponseDto(item.getSide(), item.getRemainingQuantity(), item.getPrice()))
+                .map(item -> new OrderResponseDto(item.getSide(), item.getRemainingAmount(), item.getPrice()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(orders);
     }

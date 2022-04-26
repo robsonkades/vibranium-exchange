@@ -7,6 +7,7 @@ import com.robsonkades.broker.adapters.outbound.persistence.WalletJpaRepository;
 import com.robsonkades.broker.adapters.outbound.persistence.WalletPortRepositoryImpl;
 import com.robsonkades.broker.core.port.*;
 import com.robsonkades.broker.core.service.CreateOrderPortServiceImpl;
+import com.robsonkades.broker.core.service.CreateWalletPortServiceImpl;
 import com.robsonkades.broker.core.service.GetWalletPortServiceImpl;
 import com.robsonkades.broker.core.service.UpdateOrderPortServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -46,5 +47,10 @@ public class BeanConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public CreateWalletPortService createWalletPortService(final WalletPortService walletPortService) {
+        return new CreateWalletPortServiceImpl(walletPortService);
     }
 }

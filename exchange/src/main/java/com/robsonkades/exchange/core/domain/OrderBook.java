@@ -27,18 +27,18 @@ public class OrderBook {
         return this.orders;
     }
 
-    public synchronized void createOrder(String wallet, String orderId, Side side, long price, long size) {
+    public synchronized void createOrder(String wallet, String orderId, Side side, long price, long amount) {
         if (orders.containsKey(orderId))
             return;
 
         if (side == Side.BUY) {
-            buy(wallet, orderId, price, size);
+            buy(wallet, orderId, price, amount);
         } else {
-            sell(wallet, orderId, price, size);
+            sell(wallet, orderId, price, amount);
         }
     }
 
-    private void sell(String wallet, String incomingId, long incomingPrice, long incomingQuantity) {
+    private void sell(String wallet, String incomingId, long incomingPrice, long incomingAmount) {
         while (!bids.isEmpty()) {
             Order resting = bids.first();
 
@@ -49,11 +49,11 @@ public class OrderBook {
             String restingId = resting.getId();
             String walletResting = resting.getWallet();
 
-            long restingQuantity = resting.getRemainingQuantity();
-            if (restingQuantity > incomingQuantity) {
-                resting.reduce(incomingQuantity);
+            long restingAmount = resting.getRemainingAmount();
+            if (restingAmount > incomingAmount) {
+                resting.reduce(incomingAmount);
 
-                eventListener.match(walletResting, wallet, restingId, incomingId, Side.SELL, restingPrice, incomingQuantity, resting.getRemainingQuantity());
+                eventListener.match(walletResting, wallet, restingId, incomingId, Side.SELL, restingPrice, incomingAmount, resting.getRemainingAmount());
 
                 return;
             }
@@ -61,17 +61,17 @@ public class OrderBook {
             bids.remove(resting);
             orders.remove(restingId);
 
-            eventListener.match(walletResting, wallet, restingId, incomingId, Side.SELL, restingPrice, restingQuantity, 0);
+            eventListener.match(walletResting, wallet, restingId, incomingId, Side.SELL, restingPrice, restingAmount, 0);
 
-            incomingQuantity -= restingQuantity;
-            if (incomingQuantity == 0)
+            incomingAmount -= restingAmount;
+            if (incomingAmount == 0)
                 return;
         }
 
-        add(wallet, incomingId, Side.SELL, incomingPrice, incomingQuantity, asks);
+        add(wallet, incomingId, Side.SELL, incomingPrice, incomingAmount, asks);
     }
 
-    private void buy(String wallet, String incomingId, long incomingPrice, long incomingQuantity) {
+    private void buy(String wallet, String incomingId, long incomingPrice, long incomingAmount) {
         while (!asks.isEmpty()) {
             Order resting = asks.first();
 
@@ -82,11 +82,11 @@ public class OrderBook {
             String restingId = resting.getId();
             String walletResting = resting.getWallet();
 
-            long restingQuantity = resting.getRemainingQuantity();
+            long restingQuantity = resting.getRemainingAmount();
 
-            if (restingQuantity > incomingQuantity) {
-                resting.reduce(incomingQuantity);
-                eventListener.match(walletResting, wallet, restingId, incomingId, Side.BUY, restingPrice, incomingQuantity, resting.getRemainingQuantity());
+            if (restingQuantity > incomingAmount) {
+                resting.reduce(incomingAmount);
+                eventListener.match(walletResting, wallet, restingId, incomingId, Side.BUY, restingPrice, incomingAmount, resting.getRemainingAmount());
                 return;
             }
 
@@ -95,33 +95,33 @@ public class OrderBook {
 
             eventListener.match(walletResting, wallet, restingId, incomingId, Side.BUY, restingPrice, restingQuantity, 0);
 
-            incomingQuantity -= restingQuantity;
-            if (incomingQuantity == 0)
+            incomingAmount -= restingQuantity;
+            if (incomingAmount == 0)
                 return;
         }
 
-        add(wallet, incomingId, Side.BUY, incomingPrice, incomingQuantity, bids);
+        add(wallet, incomingId, Side.BUY, incomingPrice, incomingAmount, bids);
     }
 
-    private void add(String wallet, String orderId, Side side, long price, long size, TreeSet<Order> queue) {
-        Order order = new Order(wallet, nextOrderNumber++, orderId, side, price, size);
+    private void add(String wallet, String orderId, Side side, long price, long amount, TreeSet<Order> queue) {
+        Order order = new Order(wallet, nextOrderNumber++, orderId, side, price, amount);
         queue.add(order);
         orders.put(orderId, order);
-        eventListener.add(wallet, orderId, side, price, size);
+        eventListener.add(wallet, orderId, side, price, amount);
     }
 
-    public void cancel(String orderId, long size) {
+    public void cancel(String orderId, long amount) {
         Order order = orders.get(orderId);
         if (order == null)
             return;
 
-        long remainingQuantity = order.getRemainingQuantity();
+        long remainingAmount = order.getRemainingAmount();
 
-        if (size >= remainingQuantity)
+        if (amount >= remainingAmount)
             return;
 
-        if (size > 0) {
-            order.resize(size);
+        if (amount > 0) {
+            order.resize(amount);
         } else {
             TreeSet<Order> queue = order.getSide() == Side.BUY ? bids : asks;
 
@@ -129,7 +129,7 @@ public class OrderBook {
             orders.remove(orderId);
         }
 
-        eventListener.cancel(order.getWallet(), orderId, remainingQuantity - size, size);
+        eventListener.cancel(order.getWallet(), orderId, remainingAmount - amount, amount);
     }
 
     private static int compareBids(Order a, Order b) {

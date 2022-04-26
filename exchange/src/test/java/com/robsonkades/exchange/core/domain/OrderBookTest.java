@@ -24,18 +24,18 @@ public class OrderBookTest {
             List<OrderEvent.Event> events = new ArrayList<>();
 
             @Override
-            public void cancel(String wallet, String orderId, long canceledQuantity, long remainingQuantity) {
+            public void cancel(String wallet, String orderId, long canceledQuantity, long remainingAmount) {
 
             }
 
             @Override
-            public void add(String wallet, String orderId, Side side, long price, long size) {
-                events.add(new OrderEvent.Add(wallet, orderId, side, price, size));
+            public void add(String wallet, String orderId, Side side, long price, long amount) {
+                events.add(new OrderEvent.Add(wallet, orderId, side, price, amount));
             }
 
             @Override
-            public void match(String restingWallet, String incomingWallet, String restingOrderId, String incomingOrderId, Side incomingSide, long price, long executedQuantity, long remainingQuantity) {
-                events.add(new OrderEvent.Match(restingWallet, incomingWallet, restingOrderId, incomingOrderId, incomingSide, price, executedQuantity, remainingQuantity));
+            public void match(String restingWallet, String incomingWallet, String restingOrderId, String incomingOrderId, Side incomingSide, long price, long executedAmount, long remainingAmount) {
+                events.add(new OrderEvent.Match(restingWallet, incomingWallet, restingOrderId, incomingOrderId, incomingSide, price, executedAmount, remainingAmount));
             }
 
             @Override

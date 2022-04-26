@@ -1,5 +1,5 @@
 # Broker
-Serviço responsável por executar as operações de compra e venda no broker.
+Serviço responsável por criar ordem de compra e venda nos exchange.
 
 ### Instalação
 - Install OpenJDK 11 [Installing OpenJDK](https://openjdk.java.net/install/)
@@ -21,6 +21,11 @@ Entre na pasta do repositório
 Executar os testes
 ```
 ❯ mvn test
+```
+
+Gerar os artefatos
+```
+❯ mvn package
 ```
 
 ### Configurações

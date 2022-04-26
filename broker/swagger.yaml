@@ -43,10 +43,33 @@ paths:
           description: "Invalid input"
         "200":
           description: "Order criada"
+  /wallets:
+    post:
+      tags:
+      - "wallet"
+      summary: "Cria uma carteria"
+      description: ""
+      operationId: "createWallet"
+      consumes:
+      - "application/json"
+      produces:
+      - "text/plain"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Criar uma carteira"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateWallet"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid Request"
   /wallets/{wallet}/{symbol}:
     get:
       tags:
-      - "broker"
+      - "wallet"
       summary: "Retorna os valores da carteria"
       description: "Retorna o valores da carteria referente a moeda"
       operationId: "getWalletsByWalletAndSymbol"
@@ -124,6 +147,22 @@ definitions:
         description: "Vibranium"
         enum:
         - "VBN"
+  CreateWallet:
+    type: "object"
+    required:
+    - "amount"
+    - "price"
+    - "wallet"
+    properties:
+      amount:
+        type: "number"
+        example: 100
+      price:
+        type: "number"
+        example: 100
+      wallet:
+        type: "string"
+        example: "robson-kades-wallet"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"

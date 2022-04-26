@@ -23,6 +23,11 @@ Executar os testes
 ❯ mvn test
 ```
 
+Gerar os artefatos
+```
+❯ mvn package
+```
+
 ### Configurações
 
 #### Variáveis de ambiente
@@ -53,7 +58,7 @@ docker build  -t exchange:1.0.0 .
 
 ### Executando o container
 ```
-docker run --name exchange -p 8080:8080 -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_USERNAME=${RABBITMQ_USERNAME} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e RABBITMQ_PORT=${RABBITMQ_PORT} -e DATABASE_HOST={DATABASE_HOST} -e DATABASE_USERNAME=${DATABASE_USERNAME} -e DATABASE_PASSWORD=${DATABASE_PASSWORD} -e HOST_EXCHANGE=${HOST_EXCHANGE} -d exchange:1.0.0
+docker run --name exchange -p 8081:8081 -e RABBITMQ_HOST=${RABBITMQ_HOST} -e RABBITMQ_USERNAME=${RABBITMQ_USERNAME} -e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -e RABBITMQ_PORT=${RABBITMQ_PORT} -e DATABASE_HOST={DATABASE_HOST} -e DATABASE_USERNAME=${DATABASE_USERNAME} -e DATABASE_PASSWORD=${DATABASE_PASSWORD} -e HOST_EXCHANGE=${HOST_EXCHANGE} -d exchange:1.0.0
 ```
 
 # Documentação das apis
